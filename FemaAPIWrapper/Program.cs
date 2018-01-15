@@ -16,13 +16,16 @@ namespace FemaAPIWrapper
         static void Main(string[] args)
         {
 
-            var femaInfo = GetFemaInfo();
+            var dds = GetDisasterDeclarationSummaries();
+            var hmg = GetHazardMitigationGrants();
 
-            var json = JsonConvert.DeserializeObject<DisasterDeclarationsSummaries.FemaInfo>(femaInfo.Result);
+            var ddsJson = JsonConvert.DeserializeObject<FemaInfo.FemaInfo>(dds.Result);
+            var hmgJson = JsonConvert.DeserializeObject<FemaInfo.FemaInfo>(hmg.Result);
 
-            json.DisasterDeclarationsSummaries.OrderByDescending(j => j.DisasterNumber);
+            ddsJson.DisasterDeclarationsSummaries.OrderByDescending(j => j.DisasterNumber);
+            hmgJson.HazardMitigationGrants.OrderByDescending(h => h.Region);
 
-            foreach (var j in json.DisasterDeclarationsSummaries)
+            foreach (var j in ddsJson.DisasterDeclarationsSummaries.Take(100))
             {
                 if (!j.PlaceCode.HasValue)
                 {
@@ -31,17 +34,32 @@ namespace FemaAPIWrapper
                 Console.WriteLine($"{j.DisasterNumber}, {j.Title}, {j.State}, {j.PlaceCode}");
             }
 
-            GetJSONFile();
+            foreach(var h in hmgJson.HazardMitigationGrants.Take(100))
+            {
+                Console.WriteLine($"{h.State}, {h.Status}, {h.IncidentType}, {h.ProjectType}");
+            }
+
+
+
+            //GetJSONFile();
         }
 
-        public static async Task<string> GetFemaInfo()
+        public static async Task<string> GetDisasterDeclarationSummaries()
         {
             HttpResponseMessage resp = httpClient.GetAsync("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries").Result;
             resp.EnsureSuccessStatusCode();
 
             var jsonString = await resp.Content.ReadAsStringAsync();
 
+            return jsonString;
+        }
 
+        public static async Task<string> GetHazardMitigationGrants()
+        {
+            HttpResponseMessage resp = httpClient.GetAsync("https://www.fema.gov/api/open/v1/HazardMitigationGrants").Result;
+            resp.EnsureSuccessStatusCode();
+
+            var jsonString = await resp.Content.ReadAsStringAsync();
 
             return jsonString;
         }
@@ -49,7 +67,7 @@ namespace FemaAPIWrapper
         public static void GetJSONFile()
         {
             using (WebClient webClient = new WebClient())
-            using (StreamWriter sw = new StreamWriter(@"C:\Elsewhere\fema.json", false))
+            using (StreamWriter sw = new StreamWriter(@"C:\fema\fema.json", false))
             using (JsonWriter jw = new JsonTextWriter(sw))
             {
                 var json = webClient.DownloadString("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries?$format=json");

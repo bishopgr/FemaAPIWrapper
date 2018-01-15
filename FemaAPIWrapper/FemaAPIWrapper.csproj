@@ -49,9 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DisasterDeclarationsSummaries\DisasterDeclarationsSummaries.cs" />
-    <Compile Include="DisasterDeclarationsSummaries\FemaInfo.cs" />
-    <Compile Include="DisasterDeclarationsSummaries\Metadata.cs" />
+    <Compile Include="FemaInfo\DisasterDeclarationsSummaries.cs" />
+    <Compile Include="FemaInfo\FemaInfo.cs" />
+    <Compile Include="FemaInfo\HazardMitigationGrants.cs" />
+    <Compile Include="FemaInfo\Metadata.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

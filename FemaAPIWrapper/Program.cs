@@ -15,33 +15,16 @@ namespace FemaAPIWrapper
         
         static void Main(string[] args)
         {
-
-            var dds = GetDisasterDeclarationSummaries();
-            var hmg = GetHazardMitigationGrants();
-
-            var ddsJson = JsonConvert.DeserializeObject<FemaInfo.FemaInfo>(dds.Result);
-            var hmgJson = JsonConvert.DeserializeObject<FemaInfo.FemaInfo>(hmg.Result);
-
-            ddsJson.DisasterDeclarationsSummaries.OrderByDescending(j => j.DisasterNumber);
-            hmgJson.HazardMitigationGrants.OrderByDescending(h => h.Region);
-
-            foreach (var j in ddsJson.DisasterDeclarationsSummaries.Take(100))
+            if(args.Length == 0)
             {
-                if (!j.PlaceCode.HasValue)
-                {
-                    j.PlaceCode = -1;
-                }
-                Console.WriteLine($"{j.DisasterNumber}, {j.Title}, {j.State}, {j.PlaceCode}");
+                Console.WriteLine("Please enter an api endpoint. I.E. DisasterDeclarationsSummaries");
+                GetJSONFile(Console.ReadLine());
             }
-
-            foreach(var h in hmgJson.HazardMitigationGrants.Take(100))
+            else
             {
-                Console.WriteLine($"{h.State}, {h.Status}, {h.IncidentType}, {h.ProjectType}");
+                GetJSONFile(args[0]);
             }
-
-
-
-            //GetJSONFile();
+           
         }
 
         public static async Task<string> GetDisasterDeclarationSummaries()
@@ -64,13 +47,15 @@ namespace FemaAPIWrapper
             return jsonString;
         }
 
-        public static void GetJSONFile()
+        public static void GetJSONFile(string apiEndpoint)
         {
+            apiEndpoint = apiEndpoint.Trim();
+            string url = $"https://www.fema.gov/api/open/v1/" + apiEndpoint + "?$format=json";
             using (WebClient webClient = new WebClient())
-            using (StreamWriter sw = new StreamWriter(@"C:\fema\fema.json", false))
+            using (StreamWriter sw = new StreamWriter($@"C:\fema\{apiEndpoint}.json", false))
             using (JsonWriter jw = new JsonTextWriter(sw))
             {
-                var json = webClient.DownloadString("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries?$format=json");
+                var json = webClient.DownloadString(url); //Example: https://www.fema.gov/api/open/v1/{apiEndpoint}?$format=json
 
                 jw.Formatting = Formatting.Indented;
 
@@ -78,6 +63,7 @@ namespace FemaAPIWrapper
                 serializer.Serialize(jw, json);
 
             }
+            Console.WriteLine($"Download of {apiEndpoint} complete.");
 
         }
 

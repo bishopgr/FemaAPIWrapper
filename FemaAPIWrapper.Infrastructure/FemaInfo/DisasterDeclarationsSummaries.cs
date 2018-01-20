@@ -1,11 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FemaAPIWrapper.FemaInfo
+﻿namespace FemaAPIWrapper.FemaInfo
 {
     public class DisasterDeclarationsSummaries
     {
@@ -14,6 +7,7 @@ namespace FemaAPIWrapper.FemaInfo
         public bool IAProgramDeclared { get; set; }
         public bool PAProgramDeclared { get; set; }
         public bool HMProgramDeclared { get; set; }
+        public string DeclarationDate { get; set; }
         public string State { get; set; }
         public string DisasterType { get; set; }
         public string IncidentType { get; set; }

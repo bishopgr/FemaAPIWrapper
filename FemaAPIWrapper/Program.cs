@@ -16,50 +16,12 @@ namespace FemaAPIWrapper
         
         static void Main(string[] args)
         {
-            //if(args.Length == 0)
-            //{
-            //    Console.WriteLine("Please enter an api endpoint. I.E. DisasterDeclarationsSummaries");
-            //    GetJSONFile(Console.ReadLine());
-            //}
-            //else
-            //{
-            //    GetJSONFile(args[0]);
-            //}
-
-            //var dds = GetDisasterDeclarationSummaries();
-            //var hmg = GetHazardMitigationGrants();
-
-            //var ddsJson = JsonConvert.DeserializeObject<FemaInfo.FemaInfo>(dds.Result);
-            //var hmgJson = JsonConvert.DeserializeObject<FemaInfo.FemaInfo>(hmg.Result);
-
-            //ddsJson.DisasterDeclarationsSummaries.OrderByDescending(j => j.DisasterNumber);
-            //hmgJson.HazardMitigationGrants.OrderByDescending(h => h.Region);
-
-            //foreach (var j in ddsJson.DisasterDeclarationsSummaries.Take(100))
-            //{
-            //    if (!j.PlaceCode.HasValue)
-            //    {
-            //        j.PlaceCode = -1;
-            //    }
-            //    Console.WriteLine($"{j.DisasterNumber}, {j.Title}, {j.State}, {j.PlaceCode}");
-            //}
-
-            //foreach (var h in hmgJson.HazardMitigationGrants.Take(100))
-            //{
-            //    Console.WriteLine($"{h.State}, {h.Status}, {h.IncidentType}, {h.ProjectType}");
-            //}
-
-            //FemaRepository femaRepository = new FemaRepository();
-            //femaRepository.Insert(ddsJson.DisasterDeclarationsSummaries.First());
 
             var dds = GetDisasterDeclarationSummaries();
 
             var ddsJson = JsonConvert.DeserializeObject<FemaInfo.FemaInfo>(dds.Result);
 
-            var summary = ddsJson.DisasterDeclarationsSummaries.First();
-
             FemaRepository femaRepository = new FemaRepository();
-            //femaRepository.Insert(ddsJson.DisasterDeclarationsSummaries.First());
             femaRepository.InsertAll(ddsJson.DisasterDeclarationsSummaries);
            
         }

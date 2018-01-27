@@ -28,7 +28,8 @@ namespace FemaAPIWrapper
 
         public static async Task<string> GetDisasterDeclarationSummaries()
         {
-            HttpResponseMessage resp = httpClient.GetAsync("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries").Result;
+            
+            HttpResponseMessage resp = httpClient.GetAsync("https://www.fema.gov/api/open/v1/DisasterDeclarationsSummaries?$filter=declarationDate%20gt%20%272017-09-08T12:35:00.000z%27").Result;
             resp.EnsureSuccessStatusCode();
 
             var jsonString = await resp.Content.ReadAsStringAsync();
